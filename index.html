@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="description" content="Home Workout Pro - تمارين منزلية احترافية" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <title>Home Workout Pro</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="dark-mode">
+
+<!-- Splash Screen -->
+<div id="splash" class="splash">
+  <div class="splash-inner">
+    <div class="splash-logo">
+      <div class="logo-ring"></div>
+      <span class="logo-icon">💪</span>
+    </div>
+    <h1 class="splash-title">HOME WORKOUT</h1>
+    <p class="splash-sub">PRO</p>
+  </div>
+</div>
+
+<!-- Notification Banner -->
+<div id="notif-banner" class="notif-banner hidden">
+  <span id="notif-text">🔔 حان وقت التدريب!</span>
+  <button onclick="dismissNotif()">✕</button>
+</div>
+
+<!-- App Shell -->
+<div id="app" class="app hidden">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo-small">💪</div>
+      <div>
+        <div class="app-name">HOME WORKOUT</div>
+        <div class="app-sub">PRO</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="icon-btn" onclick="toggleDark()" title="وضع ليلي/نهاري">
+        <span id="theme-icon">☀️</span>
+      </button>
+      <button class="icon-btn" onclick="toggleNotifications()" title="الإشعارات">
+        <span id="notif-icon">🔔</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Streak Bar -->
+  <div class="streak-bar">
+    <div class="streak-info">
+      <span class="streak-fire">🔥</span>
+      <span id="streak-count">0</span>
+      <span class="streak-label">يوم متتالي</span>
+    </div>
+    <div class="streak-week">
+      <div id="week-days" class="week-days"></div>
+    </div>
+  </div>
+
+  <!-- Nav Tabs -->
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('home')" data-tab="home">
+      <span>🏠</span><span>الرئيسية</span>
+    </button>
+    <button class="nav-tab" onclick="switchTab('workouts')" data-tab="workouts">
+      <span>🏋️</span><span>التمارين</span>
+    </button>
+    <button class="nav-tab" onclick="switchTab('favorites')" data-tab="favorites">
+      <span>⭐</span><span>المفضلة</span>
+    </button>
+    <button class="nav-tab" onclick="switchTab('progress')" data-tab="progress">
+      <span>📊</span><span>التقدم</span>
+    </button>
+  </nav>
+
+  <!-- ===== HOME TAB ===== -->
+  <div id="tab-home" class="tab-content active">
+    <div class="home-hero">
+      <div class="hero-text">
+        <p class="hero-greeting" id="greeting">صباح الخير!</p>
+        <h2 class="hero-title">جاهز للتدريب؟</h2>
+        <p class="hero-sub">اختر برنامجك اليومي وابدأ الآن</p>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-card">
+          <span class="stat-num" id="total-workouts">0</span>
+          <span class="stat-label">تمرين مكتمل</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num" id="total-minutes">0</span>
+          <span class="stat-label">دقيقة تدريب</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num" id="total-calories">0</span>
+          <span class="stat-label">سعرة محروقة</span>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="section-title">برامج التدريب</h3>
+    <div class="program-grid" id="program-grid"></div>
+
+    <h3 class="section-title">تمرين اليوم</h3>
+    <div id="daily-workout-card" class="daily-card"></div>
+  </div>
+
+  <!-- ===== WORKOUTS TAB ===== -->
+  <div id="tab-workouts" class="tab-content hidden">
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterMuscle('all', this)">الكل</button>
+      <button class="filter-btn" onclick="filterMuscle('chest', this)">صدر</button>
+      <button class="filter-btn" onclick="filterMuscle('abs', this)">بطن</button>
+      <button class="filter-btn" onclick="filterMuscle('legs', this)">أرجل</button>
+      <button class="filter-btn" onclick="filterMuscle('arms', this)">ذراعين</button>
+      <button class="filter-btn" onclick="filterMuscle('full', this)">كامل الجسم</button>
+    </div>
+    <div class="exercise-list" id="exercise-list"></div>
+  </div>
+
+  <!-- ===== FAVORITES TAB ===== -->
+  <div id="tab-favorites" class="tab-content hidden">
+    <div class="favorites-header">
+      <h3 class="section-title">التمارين المفضلة ⭐</h3>
+    </div>
+    <div class="exercise-list" id="favorites-list"></div>
+    <div id="no-favorites" class="empty-state hidden">
+      <span class="empty-icon">⭐</span>
+      <p>لا توجد تمارين مفضلة بعد</p>
+      <p class="empty-sub">اضغط على ⭐ على أي تمرين لإضافته</p>
+    </div>
+  </div>
+
+  <!-- ===== PROGRESS TAB ===== -->
+  <div id="tab-progress" class="tab-content hidden">
+    <div class="progress-overview">
+      <h3 class="section-title">تتبع تقدمك 📊</h3>
+      <div class="progress-stats-grid">
+        <div class="prog-card accent1">
+          <div class="prog-num" id="prog-week">0</div>
+          <div class="prog-label">تمارين هذا الأسبوع</div>
+        </div>
+        <div class="prog-card accent2">
+          <div class="prog-num" id="prog-month">0</div>
+          <div class="prog-label">تمارين هذا الشهر</div>
+        </div>
+        <div class="prog-card accent3">
+          <div class="prog-num" id="prog-streak">0</div>
+          <div class="prog-label">أطول سلسلة</div>
+        </div>
+        <div class="prog-card accent4">
+          <div class="prog-num" id="prog-total">0</div>
+          <div class="prog-label">إجمالي التمارين</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="section-title">نشاط آخر 30 يوم</h3>
+    <div class="calendar-grid" id="activity-calendar"></div>
+
+    <h3 class="section-title">سجل التمارين</h3>
+    <div class="history-list" id="history-list"></div>
+  </div>
+</div>
+
+<!-- ===== WORKOUT MODAL ===== -->
+<div id="workout-modal" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button class="back-btn" onclick="closeModal()">← رجوع</button>
+      <h2 id="modal-title" class="modal-title"></h2>
+      <span id="modal-badge" class="modal-badge"></span>
+    </div>
+
+    <div class="exercise-detail" id="exercise-detail">
+      <div class="exercise-anim" id="exercise-anim"></div>
+      <div class="exercise-meta">
+        <div class="meta-item"><span class="meta-icon">🔁</span><span id="meta-reps"></span></div>
+        <div class="meta-item"><span class="meta-icon">📦</span><span id="meta-sets"></span></div>
+        <div class="meta-item"><span class="meta-icon">🔥</span><span id="meta-cal"></span></div>
+      </div>
+      <div class="exercise-desc" id="exercise-desc"></div>
+      <div class="steps-list" id="steps-list"></div>
+    </div>
+
+    <!-- Timer Section -->
+    <div class="timer-section">
+      <div class="timer-ring-wrap">
+        <svg class="timer-svg" viewBox="0 0 120 120">
+          <circle class="timer-bg" cx="60" cy="60" r="52"/>
+          <circle class="timer-prog" id="timer-circle" cx="60" cy="60" r="52"
+            stroke-dasharray="326.7" stroke-dashoffset="0"/>
+        </svg>
+        <div class="timer-display">
+          <span id="timer-val">00:00</span>
+          <span class="timer-label-sm" id="timer-phase">تحضير</span>
+        </div>
+      </div>
+      <div class="timer-controls">
+        <button class="ctrl-btn" onclick="resetTimer()">↺</button>
+        <button class="ctrl-btn main-ctrl" id="start-btn" onclick="toggleTimer()">▶</button>
+        <button class="ctrl-btn" onclick="skipPhase()">⏭</button>
+      </div>
+      <div class="set-tracker">
+        <span>الجولة: </span>
+        <span id="current-set">1</span>/<span id="total-sets">3</span>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="fav-btn" id="fav-btn" onclick="toggleFavorite()">⭐ أضف للمفضلة</button>
+      <button class="complete-btn" onclick="markComplete()">✓ أتممت التمرين</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PROGRAM MODAL ===== -->
+<div id="program-modal" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button class="back-btn" onclick="closeProgramModal()">← رجوع</button>
+      <h2 id="prog-modal-title" class="modal-title"></h2>
+    </div>
+    <div class="program-exercises" id="program-exercises"></div>
+    <div class="modal-footer">
+      <button class="complete-btn" onclick="startProgramWorkout()">🚀 ابدأ البرنامج</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== REST OVERLAY ===== -->
+<div id="rest-overlay" class="rest-overlay hidden">
+  <div class="rest-content">
+    <div class="rest-emoji">😤</div>
+    <h2>استراحة</h2>
+    <div class="rest-timer" id="rest-timer">30</div>
+    <p>الجولة القادمة تبدأ قريباً...</p>
+    <button onclick="skipRest()">تخطي الاستراحة ⏭</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast hidden"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
