@@ -10,7 +10,6 @@
   "orientation": "portrait",
   "lang": "ar",
   "dir": "rtl",
-
   "icons": [
     {
       "src": "icons/icon-192.png",
@@ -23,7 +22,6 @@
       "type": "image/png"
     }
   ],
-
   "categories": [
     "fitness",
     "health",
